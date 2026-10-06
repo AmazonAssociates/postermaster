@@ -19,10 +19,17 @@ def fetch_news():
     r = requests.get(f"https://newsdata.io/api/1/news?apikey={NEWS_API_KEY}&country=us&language=en&category=top")
     return r.json().get("results", [])[:8]
 
+def format_content(article):
+    title = article.get("title", "Untitled")
+    description = article.get("description") or ""
+    link = article.get("link") or ""
+    # Add bold headline + clickable source link
+    return f"<b>{title}</b><br><p>{description}</p><p><a href='{link}' target='_blank'>Read more</a></p>"
+
 def post_to_blogger(article, token):
     url = f"https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts/"
     headers = {"Authorization": f"Bearer {token}"}
-    body = {"title": article.get("title"), "content": article.get("description") or ""}
+    body = {"title": article.get("title"), "content": format_content(article)}
     r = requests.post(url, headers=headers, json=body)
     if r.status_code == 429:  # rate limit
         time.sleep(5)
