@@ -22,7 +22,7 @@ service = build("blogger", "v3", credentials=creds)
 
 def fetch_news():
     """Fetch 8 latest breaking news articles from NewsData.io"""
-    url = f"https://newsdata.io/api/1/news?apikey={NEWS_API_KEY}&q=*&language=en"
+    url = f"https://newsdata.io/api/1/news?apikey={NEWS_API_KEY}&category=breaking&language=en"
     try:
         response = requests.get(url, timeout=10).json()
         articles = response.get("results")
@@ -30,7 +30,7 @@ def fetch_news():
         if isinstance(articles, list) and len(articles) > 0:
             return articles[:8]  # Limit to 8 articles
         else:
-            print("⚠️ No breaking news found in NewsData.io response.")
+            print("⚠️ No breaking news found.")
             print("Full response:", response)  # Debug log
             return []
     except Exception as e:
