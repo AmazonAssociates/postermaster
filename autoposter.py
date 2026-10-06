@@ -21,32 +21,47 @@ service = build("blogger", "v3", credentials=creds)
 
 def fetch_news():
     url = f"https://newsdata.io/api/1/news?apikey={NEWS_API_KEY}&category=gaming&language=en&page=1"
-    response = requests.get(url).json()
-    return response.get("results", [])[:8]  # Limit to 8 articles
+    try:
+        response = requests.get(url, timeout=10).json()
+        articles = response.get("results")
+        if isinstance(articles, list):
+            return articles[:8]
+        else:
+            print("⚠️ No articles found or API returned unexpected format.")
+            return []
+    except Exception as e:
+        print(f"❌ Error fetching news: {e}")
+        return []
 
 def post_to_blogger(article):
-    title = article.get("title", "Untitled")
-    description = article.get("description", "")
-    link = article.get("link", "")
-    image = article.get("image_url", "")
+    try:
+        title = article.get("title", "Untitled")
+        description = article.get("description", "")
+        link = article.get("link", "")
+        image = article.get("image_url", "")
 
-    content = f"""
-    <h2>{title}</h2>
-    <p>{description}</p>
-    <p><a href="{link}">Read more</a></p>
-    """
-    if image:
-        content = f'<img src="{image}" alt="News Image" style="max-width:100%;"/>' + content
+        content = f"""
+        <h2>{title}</h2>
+        <p>{description}</p>
+        <p><a href="{link}">Read more</a></p>
+        """
+        if image:
+            content = f'<img src="{image}" alt="News Image" style="max-width:100%;"/>' + content
 
-    post = {
-        "kind": "blogger#post",
-        "title": title,
-        "content": content
-    }
-    service.posts().insert(blogId=BLOG_ID, body=post).execute()
-    print(f"Posted: {title}")
+        post = {
+            "kind": "blogger#post",
+            "title": title,
+            "content": content
+        }
+        service.posts().insert(blogId=BLOG_ID, body=post).execute()
+        print(f"✅ Posted: {title}")
+    except Exception as e:
+        print(f"❌ Failed to post article: {e}")
 
 if __name__ == "__main__":
     articles = fetch_news()
-    for article in articles:
-        post_to_blogger(article)
+    if articles:
+        for article in articles:
+            post_to_blogger(article)
+    else:
+        print("⚠️ No articles to post today.")
