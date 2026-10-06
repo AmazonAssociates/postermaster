@@ -26,13 +26,14 @@ def format_content(article):
     link = article.get("link") or ""
     image = article.get("image_url") or ""
 
-    # Build HTML with image, bold headline, full content, and source link
     html = f"<h2>{title}</h2>"
     if image:
         html += f"<img src='{image}' alt='{title}' style='max-width:100%;height:auto;'/><br>"
     html += f"<p>{content}</p>"
     if link:
         html += f"<p><a href='{link}' target='_blank'>Read full article</a></p>"
+    # Add branded footer
+    html += "<hr><p><em>Published by Amazon Associates</em></p>"
     return html
 
 def post_to_blogger(article, token):
