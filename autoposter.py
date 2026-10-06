@@ -22,9 +22,18 @@ def fetch_news():
 def format_content(article):
     title = article.get("title", "Untitled")
     description = article.get("description") or ""
+    content = article.get("content") or description
     link = article.get("link") or ""
-    # Add bold headline + clickable source link
-    return f"<b>{title}</b><br><p>{description}</p><p><a href='{link}' target='_blank'>Read more</a></p>"
+    image = article.get("image_url") or ""
+
+    # Build HTML with image, bold headline, full content, and source link
+    html = f"<h2>{title}</h2>"
+    if image:
+        html += f"<img src='{image}' alt='{title}' style='max-width:100%;height:auto;'/><br>"
+    html += f"<p>{content}</p>"
+    if link:
+        html += f"<p><a href='{link}' target='_blank'>Read full article</a></p>"
+    return html
 
 def post_to_blogger(article, token):
     url = f"https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts/"
@@ -40,7 +49,7 @@ def main():
     token = get_access_token()
     for article in fetch_news():
         post_to_blogger(article, token)
-        time.sleep(2)  # small pause avoids quota spike
+        time.sleep(2)  # throttle requests
 
 if __name__ == "__main__":
     main()
