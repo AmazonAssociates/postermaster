@@ -14,6 +14,8 @@ NEWS_API_KEYS = [
 
 POSTED_FILE = "posted_urls.txt"
 
+DEFAULT_IMAGE = "https://picsum.photos/1200/700"
+
 
 def get_access_token():
     r = requests.post(
@@ -27,7 +29,6 @@ def get_access_token():
     )
 
     r.raise_for_status()
-
     return r.json()["access_token"]
 
 
@@ -40,7 +41,7 @@ def already_posted(url):
         return False
 
     with open(POSTED_FILE, "r", encoding="utf-8") as f:
-        return url.strip() in f.read()
+        return url in f.read()
 
 
 def mark_posted(url):
@@ -70,8 +71,8 @@ def clean_text(text):
 
     cleaned = str(text)
 
-    for phrase in blocked_phrases:
-        cleaned = cleaned.replace(phrase, "")
+    for item in blocked_phrases:
+        cleaned = cleaned.replace(item, "")
 
     return cleaned.strip()
 
@@ -87,7 +88,9 @@ def fetch_news():
 
         try:
 
-            print(f"Trying API Key: {api_key[:5]}*****")
+            print(
+                f"Trying API Key: {api_key[:5]}*****"
+            )
 
             url = (
                 "https://newsdata.io/api/1/latest"
@@ -96,15 +99,25 @@ def fetch_news():
                 "&removeduplicate=1"
             )
 
-            r = requests.get(url, timeout=30)
+            r = requests.get(
+                url,
+                timeout=30
+            )
 
             if r.status_code == 429:
-                print("Quota exhausted. Switching key...")
+
+                print(
+                    "Quota exhausted. Switching key..."
+                )
+
                 continue
 
             data = r.json()
 
-            if data.get("status") == "error":
+            if (
+                isinstance(data, dict)
+                and data.get("status") == "error"
+            ):
                 continue
 
             for article in data.get("results", []):
@@ -122,16 +135,14 @@ def fetch_news():
                 )
 
                 if not description and not content:
+
                     print(
-                        "Skipping empty article:",
-                        title
+                        f"Skipping empty article: {title}"
                     )
+
                     continue
 
-                if (
-                    len(content) < 50
-                    and len(description) > 50
-                ):
+                if len(content) < 50:
                     content = description
 
                 article["title"] = title
@@ -141,10 +152,13 @@ def fetch_news():
                 articles.append(article)
 
             if articles:
-                return articles
+                break
 
         except Exception as e:
-            print("News API Error:", e)
+
+            print(
+                f"News API error: {e}"
+            )
 
     return articles
 
@@ -152,100 +166,102 @@ def fetch_news():
 def format_content(article):
 
     title = article.get("title", "")
-
     description = article.get("description", "")
-
     content = article.get("content", "")
 
-    source = article.get("source_id", "Unknown Source")
+    source = article.get(
+        "source_id",
+        "Unknown Source"
+    )
 
-    date = article.get("pubDate", "")
+    pub_date = article.get(
+        "pubDate",
+        ""
+    )
 
-    creator = article.get("creator") or []
+    image_url = (
+        article.get("image_url")
+        or article.get("image")
+        or article.get("imageUrl")
+        or article.get("photo_url")
+        or article.get("thumbnail")
+        or DEFAULT_IMAGE
+    )
 
-    category = article.get("category") or []
+    author = article.get(
+        "creator",
+        []
+    )
 
-    country = article.get("country") or []
+    category = article.get(
+        "category",
+        []
+    )
 
-    keywords = article.get("keywords") or []
+    country = article.get(
+        "country",
+        []
+    )
+
+    keywords = article.get(
+        "keywords",
+        []
+    )
+
+    link = article.get("link", "")
 
     html = f"""
-<div style="font-family:Arial,sans-serif;line-height:1.9;max-width:900px;margin:auto;">
+<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.8;max-width:900px;margin:auto">
 
 <h1>{title}</h1>
 
-<p>
-<strong>Published:</strong> {date}<br>
-<strong>Source:</strong> {source}
-</p>
-"""
-
-    image_url = None
-
-    for key in article.keys():
-
-        if "image" in key.lower():
-
-            image_url = article.get(key)
-
-            if image_url:
-                break
-
-    if image_url:
-
-        html += f"""
 {image_url}
-<br><br>
-"""
 
-    html += f"""
+<br><br>
+
+<p>
+<b>Published:</b> {pub_date}<br>
+<b>Source:</b> {source}
+</p>
+
 <h2>Overview</h2>
 
 <p>{description}</p>
-"""
 
-    if content:
-
-        html += f"""
-<h2>Detailed Report</h2>
+<h2>Details</h2>
 
 <p>{content}</p>
 """
 
-    if creator:
+    if author:
 
         html += f"""
 <h3>Author</h3>
-
-<p>{", ".join(creator)}</p>
+<p>{', '.join(author)}</p>
 """
 
     if category:
 
         html += f"""
 <h3>Category</h3>
-
-<p>{", ".join(category)}</p>
+<p>{', '.join(category)}</p>
 """
 
     if country:
 
         html += f"""
 <h3>Country</h3>
-
-<p>{", ".join(country)}</p>
+<p>{', '.join(country)}</p>
 """
 
     if keywords:
 
         html += "<h3>Keywords</h3><ul>"
 
-        for kw in keywords:
-            html += f"<li>{kw}</li>"
+        for keyword in keywords:
+            html += f"<li>{keyword}</li>"
 
         html += "</ul>"
-
-    link = article.get("link")
 
     if link:
 
@@ -264,19 +280,18 @@ View Original Source
 
 def post_to_blogger(article, token):
 
-    article_url = article.get("link", "")
+    article_url = article.get("link")
 
     if already_posted(article_url):
 
         print(
-            "Duplicate skipped:",
-            article.get("title")
+            f"Duplicate skipped: {article.get('title')}"
         )
 
         return
 
     url = (
-        f"https://www.googleapis.com/blogger/v3/blogs/"
+        "https://www.googleapis.com/blogger/v3/blogs/"
         f"{BLOG_ID}/posts/"
     )
 
@@ -309,15 +324,13 @@ def post_to_blogger(article, token):
         mark_posted(article_url)
 
         print(
-            "✅ Posted:",
-            article.get("title")
+            f"✅ Posted: {article.get('title')}"
         )
 
     else:
 
         print(
-            "❌ Blogger error:",
-            r.text
+            f"❌ Failed: {r.text}"
         )
 
 
@@ -345,8 +358,7 @@ def main():
         except Exception as e:
 
             print(
-                "Posting error:",
-                e
+                f"Posting error: {e}"
             )
 
 
