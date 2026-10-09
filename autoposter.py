@@ -16,7 +16,6 @@ POSTED_FILE = "posted_urls.txt"
 
 
 def get_access_token():
-
     r = requests.post(
         "https://oauth2.googleapis.com/token",
         data={
@@ -26,73 +25,47 @@ def get_access_token():
             "grant_type": "refresh_token"
         }
     )
-
     r.raise_for_status()
-
     return r.json()["access_token"]
 
 
 def already_posted(url):
-
     if not os.path.exists(POSTED_FILE):
         return False
 
     with open(POSTED_FILE, "r", encoding="utf-8") as f:
-        return url in f.read()
+        return url.strip() in [x.strip() for x in f.readlines()]
 
 
 def mark_posted(url):
-
     with open(POSTED_FILE, "a", encoding="utf-8") as f:
         f.write(url + "\n")
 
 
-def clean_text(text):
+def contains_premium_text(article):
 
-    if not text:
-        return ""
-
-    blocked = [
-        "ONLY AVAILABLE IN PAID PLANS",
-        "AVAILABLE IN PAID PLANS",
-        "AVAILABLE ON PAID PLANS",
-        "FULL ARTICLE AVAILABLE",
-        "FULL ARTICLE AVAILABLE ON PREMIUM PLAN",
-        "PREMIUM PLAN",
-        "PAID PLAN",
-        "PAID PLANS"
-    ]
-
-    for item in blocked:
-        text = text.replace(item, "")
-
-    return text.strip()
-
-
-def is_premium_article(article):
-
-    combined = (
-        str(article.get("title", ""))
-        + " "
-        + str(article.get("description", ""))
-        + " "
-        + str(article.get("content", ""))
-    ).lower()
+    text = " ".join([
+        str(article.get("title", "")),
+        str(article.get("description", "")),
+        str(article.get("content", ""))
+    ]).lower()
 
     blocked = [
-        "paid plan",
-        "paid plans",
-        "premium plan",
+        "only available in paid plans",
+        "available in paid plans",
+        "available on paid plans",
         "full article available",
-        "only available in paid plans"
+        "premium plan",
+        "paid plan",
+        "paid plans"
     ]
 
-    return any(word in combined for word in blocked)
+    return any(x in text for x in blocked)
 
 
 def fetch_news():
 
-    all_articles = []
+    valid_articles = []
 
     for api_key in NEWS_API_KEYS:
 
@@ -101,76 +74,62 @@ def fetch_news():
 
         try:
 
-            print(f"Using API Key: {api_key[:6]}******")
+            print(f"Trying API key: {api_key[:5]}*****")
 
             url = (
                 "https://newsdata.io/api/1/news"
                 f"?apikey={api_key}"
-                "&country=us"
                 "&language=en"
+                "&country=us"
             )
 
-            r = requests.get(url, timeout=20)
+            r = requests.get(url, timeout=30)
 
             if r.status_code == 429:
-                print("Quota exhausted. Switching API...")
+                print("Quota reached, switching key...")
                 continue
 
             data = r.json()
 
-            if data.get("status") == "error":
-                continue
-
             for article in data.get("results", []):
 
-                if is_premium_article(article):
+                if contains_premium_text(article):
                     print(
-                        "Skipping premium article:",
+                        "Skipped premium article:",
                         article.get("title")
                     )
                     continue
 
-                description = clean_text(
-                    article.get("description", "")
-                )
+                description = article.get("description", "") or ""
+                content = article.get("content", "") or ""
 
-                content = clean_text(
-                    article.get("content", "")
-                )
-
-                if len(description) < 80 and len(content) < 80:
+                if len(description) < 40 and len(content) < 40:
                     print(
-                        "Skipping weak article:",
+                        "Skipped weak article:",
                         article.get("title")
                     )
                     continue
 
-                all_articles.append(article)
+                valid_articles.append(article)
 
-            if all_articles:
-                return all_articles
+            if valid_articles:
+                return valid_articles
 
         except Exception as e:
             print("API Error:", e)
 
-    return []
+    return valid_articles
 
 
 def format_content(article):
 
     title = article.get("title", "")
-
-    description = clean_text(
-        article.get("description", "")
-    )
-
-    content = clean_text(
-        article.get("content", "")
-    )
+    description = article.get("description", "") or ""
+    content = article.get("content", "") or ""
 
     source = article.get("source_id", "")
+    published = article.get("pubDate", "")
     link = article.get("link", "")
-    date = article.get("pubDate", "")
 
     creator = article.get("creator", [])
     category = article.get("category", [])
@@ -178,67 +137,61 @@ def format_content(article):
     keywords = article.get("keywords", [])
 
     html = f"""
-    <div style="font-family:Arial,sans-serif;line-height:1.8;max-width:900px;margin:auto;">
+<div style="font-family:Arial,sans-serif;line-height:1.8;max-width:900px;margin:auto;">
 
-    <h1>{title}</h1>
+<h1>{title}</h1>
 
-    <p>
-    <strong>Published:</strong> {date}<br>
-    <strong>Source:</strong> {source}
-    </p>
-    """
+<p>
+<b>Published:</b> {published}<br>
+<b>Source:</b> {source}
+</p>
+"""
 
-    image_fields = [
-        key
-        for key in article.keys()
-        if "image" in key.lower()
-    ]
+    for key in article.keys():
 
-    for field in image_fields:
+        if "image" in key.lower():
 
-        image_url = article.get(field)
+            image_url = article.get(key)
 
-        if image_url:
-
-            html += f"""
-            {image_url}
-            <br><br>
-            """
-
-            break
+            if image_url:
+                html += f"""
+{image_url}
+<br><br>
+"""
+                break
 
     html += f"""
-    <h2>Overview</h2>
-    <p>{description}</p>
-    """
+<h2>Overview</h2>
+<p>{description}</p>
+"""
 
-    if content and len(content) > 50:
+    if content:
 
         html += f"""
-        <h2>Details</h2>
-        <p>{content}</p>
-        """
+<h2>Details</h2>
+<p>{content}</p>
+"""
 
     if creator:
 
         html += f"""
-        <h3>Author</h3>
-        <p>{", ".join(creator)}</p>
-        """
+<h3>Author</h3>
+<p>{", ".join(creator)}</p>
+"""
 
     if category:
 
         html += f"""
-        <h3>Category</h3>
-        <p>{", ".join(category)}</p>
-        """
+<h3>Category</h3>
+<p>{", ".join(category)}</p>
+"""
 
     if country:
 
         html += f"""
-        <h3>Country</h3>
-        <p>{", ".join(country)}</p>
-        """
+<h3>Country</h3>
+<p>{", ".join(country)}</p>
+"""
 
     if keywords:
 
@@ -252,24 +205,80 @@ def format_content(article):
     if link:
 
         html += f"""
-        <p>
-        {link}
-        Original Source
-        </a>
-        </p>
-        """
+<p>
+{link}
+View Original Source
+</a>
+</p>
+"""
 
-    html += "</div>"
+    html += """
+</div>
+"""
 
     return html
 
 
 def post_to_blogger(article, token):
 
-    link = article.get("link", "")
+    article_url = article.get("link", "")
 
-    if link and already_posted(link):
+    if article_url and already_posted(article_url):
+        print("Duplicate skipped:", article.get("title"))
+        return
 
-        print(
-            "Already posted:",
-  
+    url = (
+        f"https://www.googleapis.com/blogger/v3/blogs/"
+        f"{BLOG_ID}/posts/"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+
+    body = {
+        "title": article.get("title"),
+        "content": format_content(article)
+    }
+
+    r = requests.post(
+        url,
+        headers=headers,
+        json=body
+    )
+
+    if r.status_code == 429:
+        time.sleep(5)
+        return post_to_blogger(article, token)
+
+    if r.ok:
+
+        if article_url:
+            mark_posted(article_url)
+
+        print("✅ Posted:", article.get("title"))
+
+    else:
+        print("❌ Failed:", r.text)
+
+
+def main():
+
+    token = get_access_token()
+
+    articles = fetch_news()
+
+    print(f"Found {len(articles)} valid articles")
+
+    for article in articles[:20]:
+
+        try:
+            post_to_blogger(article, token)
+            time.sleep(2)
+
+        except Exception as e:
+            print("Posting error:", e)
+
+
+if __name__ == "__main__":
+    main()
