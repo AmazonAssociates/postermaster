@@ -18,7 +18,7 @@ DEFAULT_IMAGE = "https://picsum.photos/1200/700"
 
 
 def get_access_token():
-    r = requests.post(
+    response = requests.post(
         "https://oauth2.googleapis.com/token",
         data={
             "client_id": CLIENT_ID,
@@ -28,8 +28,8 @@ def get_access_token():
         }
     )
 
-    r.raise_for_status()
-    return r.json()["access_token"]
+    response.raise_for_status()
+    return response.json()["access_token"]
 
 
 def already_posted(url):
@@ -41,7 +41,9 @@ def already_posted(url):
         return False
 
     with open(POSTED_FILE, "r", encoding="utf-8") as f:
-        return url in f.read()
+        return url.strip() in [
+            x.strip() for x in f.readlines()
+        ]
 
 
 def mark_posted(url):
@@ -58,7 +60,7 @@ def clean_text(text):
     if not text:
         return ""
 
-    blocked_phrases = [
+    blocked = [
         "ONLY AVAILABLE IN PAID PLANS",
         "AVAILABLE IN PAID PLANS",
         "AVAILABLE ON PAID PLANS",
@@ -69,12 +71,12 @@ def clean_text(text):
         "PAID PLANS"
     ]
 
-    cleaned = str(text)
+    text = str(text)
 
-    for item in blocked_phrases:
-        cleaned = cleaned.replace(item, "")
+    for phrase in blocked:
+        text = text.replace(phrase, "")
 
-    return cleaned.strip()
+    return text.strip()
 
 
 def fetch_news():
@@ -88,9 +90,7 @@ def fetch_news():
 
         try:
 
-            print(
-                f"Trying API Key: {api_key[:5]}*****"
-            )
+            print(f"Trying API Key: {api_key[:5]}*****")
 
             url = (
                 "https://newsdata.io/api/1/latest"
@@ -99,47 +99,47 @@ def fetch_news():
                 "&removeduplicate=1"
             )
 
-            r = requests.get(
+            response = requests.get(
                 url,
                 timeout=30
             )
 
-            if r.status_code == 429:
-
-                print(
-                    "Quota exhausted. Switching key..."
-                )
-
+            if response.status_code == 429:
+                print("Quota reached. Switching keys...")
                 continue
 
-            data = r.json()
+            data = response.json()
 
-            if (
-                isinstance(data, dict)
-                and data.get("status") == "error"
+            for article in data.get(
+                "results",
+                []
             ):
-                continue
-
-            for article in data.get("results", []):
 
                 title = clean_text(
-                    article.get("title", "")
+                    article.get(
+                        "title",
+                        ""
+                    )
                 )
 
                 description = clean_text(
-                    article.get("description", "")
+                    article.get(
+                        "description",
+                        ""
+                    )
                 )
 
                 content = clean_text(
-                    article.get("content", "")
+                    article.get(
+                        "content",
+                        ""
+                    )
                 )
 
                 if not description and not content:
-
                     print(
                         f"Skipping empty article: {title}"
                     )
-
                     continue
 
                 if len(content) < 50:
@@ -152,12 +152,12 @@ def fetch_news():
                 articles.append(article)
 
             if articles:
-                break
+                return articles
 
         except Exception as e:
 
             print(
-                f"News API error: {e}"
+                f"API Error: {e}"
             )
 
     return articles
@@ -165,9 +165,20 @@ def fetch_news():
 
 def format_content(article):
 
-    title = article.get("title", "")
-    description = article.get("description", "")
-    content = article.get("content", "")
+    title = article.get(
+        "title",
+        ""
+    )
+
+    description = article.get(
+        "description",
+        ""
+    )
+
+    content = article.get(
+        "content",
+        ""
+    )
 
     source = article.get(
         "source_id",
@@ -208,20 +219,21 @@ def format_content(article):
         []
     )
 
-    link = article.get("link", "")
+    link = article.get(
+        "link",
+        ""
+    )
 
     html = f"""
-<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.8;max-width:900px;margin:auto">
+<div style="font-family:Arial,sans-serif;max-width:900px;margin:auto;line-height:1.8">
 
 <h1>{title}</h1>
 
 {image_url}
 
-<br><br>
-
 <p>
-<b>Published:</b> {pub_date}<br>
-<b>Source:</b> {source}
+<strong>Published:</strong> {pub_date}<br>
+<strong>Source:</strong> {source}
 </p>
 
 <h2>Overview</h2>
@@ -268,7 +280,7 @@ def format_content(article):
         html += f"""
 <p>
 {link}
-View Original Source
+Read Original Source
 </a>
 </p>
 """
@@ -280,7 +292,10 @@ View Original Source
 
 def post_to_blogger(article, token):
 
-    article_url = article.get("link")
+    article_url = article.get(
+        "link",
+        ""
+    )
 
     if already_posted(article_url):
 
@@ -300,17 +315,21 @@ def post_to_blogger(article, token):
     }
 
     body = {
-        "title": article.get("title"),
-        "content": format_content(article)
+        "title": article.get(
+            "title"
+        ),
+        "content": format_content(
+            article
+        )
     }
 
-    r = requests.post(
+    response = requests.post(
         url,
         headers=headers,
         json=body
     )
 
-    if r.status_code == 429:
+    if response.status_code == 429:
 
         time.sleep(5)
 
@@ -319,7 +338,7 @@ def post_to_blogger(article, token):
             token
         )
 
-    if r.ok:
+    if response.ok:
 
         mark_posted(article_url)
 
@@ -330,7 +349,7 @@ def post_to_blogger(article, token):
     else:
 
         print(
-            f"❌ Failed: {r.text}"
+            f"❌ Failed: {response.text}"
         )
 
 
@@ -358,7 +377,7 @@ def main():
         except Exception as e:
 
             print(
-                f"Posting error: {e}"
+                f"Posting Error: {e}"
             )
 
 
