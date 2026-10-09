@@ -105,10 +105,13 @@ def fetch_news():
             )
 
             if response.status_code == 429:
-                print("Quota reached. Switching keys...")
+                print("Quota reached. Switching key...")
                 continue
 
             data = response.json()
+
+            if data.get("status") == "error":
+                continue
 
             for article in data.get(
                 "results",
@@ -165,20 +168,9 @@ def fetch_news():
 
 def format_content(article):
 
-    title = article.get(
-        "title",
-        ""
-    )
-
-    description = article.get(
-        "description",
-        ""
-    )
-
-    content = article.get(
-        "content",
-        ""
-    )
+    title = article.get("title", "")
+    description = article.get("description", "")
+    content = article.get("content", "")
 
     source = article.get(
         "source_id",
@@ -315,12 +307,8 @@ def post_to_blogger(article, token):
     }
 
     body = {
-        "title": article.get(
-            "title"
-        ),
-        "content": format_content(
-            article
-        )
+        "title": article.get("title"),
+        "content": format_content(article)
     }
 
     response = requests.post(
