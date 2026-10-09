@@ -216,12 +216,13 @@ def format_content(article):
         ""
     )
 
+    # FIXED: Added the <img> tag for the image URL so it renders properly
     html = f"""
 <div style="font-family:Arial,sans-serif;max-width:900px;margin:auto;line-height:1.8">
 
 <h1>{title}</h1>
 
-{image_url}
+<img src="{image_url}" alt="{title}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px; display: block;" />
 
 <p>
 <strong>Published:</strong> {pub_date}<br>
@@ -268,12 +269,10 @@ def format_content(article):
         html += "</ul>"
 
     if link:
-
+        # FIXED: Added the proper <a href> tag to make the link clickable
         html += f"""
 <p>
-{link}
-Read Original Source
-</a>
+<a href="{link}" target="_blank" rel="noopener noreferrer">Read Original Source</a>
 </p>
 """
 
