@@ -12,8 +12,13 @@ POSTED_FILE = "posted_movies.txt"
 DEFAULT_IMAGE = "https://picsum.photos/1200/700"
 TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
 
-# Direct Drive Link for your APK
-APK_DRIVE_LINK = "https://drive.google.com/file/d/19RPdMPaflAMCujyiroh95BxDWJRoff4X/view?usp=sharing"
+# All Official Links & Platforms
+APK_DRIVE_LINK = "https://drive.google.com/uc?export=download&id=1-MzbkxuEXllxTWdPv0zVXRmXtmBlfA9N"
+WHATSAPP_LINK = "https://chat.whatsapp.com/L02vNHjowvW83MLbJVqIwC?s=cl&p=a&mlu=4&ilr=4"
+FB_PAGE_LINK = "https://www.facebook.com/profile.php?id=61595278122419"
+FB_GROUP_LINK = "https://www.facebook.com/share/g/19zsQAbGu7/"
+BLOGGER_LINK = "https://filmboxproductions.blogspot.com"
+PAYPAL_LINK = "https://www.paypal.com/donate?business=lomalianorman@gmail.com&currency_code=USD"
 
 
 def get_access_token():
@@ -98,52 +103,64 @@ def format_movie_content(movie):
     stream_url = f"https://vidsrc.to/embed/movie/{movie_id}"
 
     html = f"""
-<div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width:900px; margin:auto; line-height:1.8; color:#e0e0e0; background-color:#0d0d11; padding:25px; border-radius:16px;">
+<div style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width:900px; margin:auto; line-height:1.8; color:#cbd5e1; background: radial-gradient(circle at top left, #1e1b4b 0%, #0f172a 50%, #020617 100%); padding:30px; border-radius:20px; border: 2px solid rgba(56, 189, 248, 0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
 
-<h1 style="color:#ffffff; font-size:32px; font-weight:800; text-align:center; margin-bottom:20px; text-transform:uppercase; letter-spacing:1px; background:linear-gradient(90deg, #00d2ff, #3a7bd5, #f700ff, #ff0055); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">{title}</h1>
+<h1 style="font-size:34px; font-weight:900; text-align:center; margin-bottom:20px; text-transform:uppercase; letter-spacing:1px; background:linear-gradient(90deg, #38bdf8, #25d366, #f472b6, #fbbf24); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">{title}</h1>
 
-<img src="{image_url}" alt="{title}" style="max-width: 100%; height: auto; border-radius: 12px; margin-bottom: 25px; display: block; margin-left:auto; margin-right:auto; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1);" />
+<img src="{image_url}" alt="{title}" style="max-width: 100%; height: auto; border-radius: 14px; margin-bottom: 25px; display: block; margin-left:auto; margin-right:auto; box-shadow: 0 12px 35px rgba(0,0,0,0.8); border: 2px solid rgba(56, 189, 248, 0.3);" />
 
-<div style="background: rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:20px; font-size:15px; border-left: 4px solid #f700ff;">
-<strong>📅 Release Date:</strong> {release_date}<br>
-<strong>⭐ TMDB Rating:</strong> <span style="color:#ffd700; font-weight:bold;">{vote_average} / 10</span>
+<div style="background: rgba(15, 23, 42, 0.8); padding:16px; border-radius:12px; margin-bottom:25px; font-size:15px; border-left: 5px solid #38bdf8; color:#7dd3fc; font-weight:600;">
+📅 <strong>Release Date:</strong> <span style="color:#f8fafc;">{release_date}</span><br>
+⭐ <strong>TMDB Rating:</strong> <span style="color:#fbbf24; font-weight:bold;">{vote_average} / 10</span>
 </div>
 
-<h2 style="color:#00d2ff; border-bottom:2px solid #00d2ff; padding-bottom:5px;">Overview</h2>
-<p style="font-size:16px; color:#cccccc;">{overview}</p>
+<h2 style="color:#38bdf8; border-bottom:2px solid rgba(56,189,248,0.3); padding-bottom:8px; text-transform:uppercase; font-size:20px;">Story Overview</h2>
+<p style="font-size:16px; color:#cbd5e1; font-weight:600; line-height:1.6;">{overview}</p>
 
-<h2 style="color:#f700ff; border-bottom:2px solid #f700ff; padding-bottom:5px; margin-top:30px;">Watch / Stream Online</h2>
-<div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; margin-bottom: 30px; box-shadow:0 8px 25px rgba(0,0,0,0.9); border-radius:12px; overflow:hidden;">
+<h2 style="color:#f472b6; border-bottom:2px solid rgba(244,114,182,0.3); padding-bottom:8px; margin-top:35px; text-transform:uppercase; font-size:20px;">Watch / Stream Online</h2>
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; margin-bottom: 35px; box-shadow:0 12px 35px rgba(0,0,0,0.9); border-radius:14px; overflow:hidden; border: 2px solid rgba(244,114,182,0.4);">
   <iframe src="{stream_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen="true"></iframe>
 </div>
 
-<!-- HIGH GRAPHICS FILM BOX APP INSTALL PROMO BANNER -->
-<div style="background: linear-gradient(135deg, #0f0c1b 0%, #1a102f 50%, #0d1b2a 100%); padding: 30px 20px; border-radius: 20px; border: 2px solid transparent; background-clip: padding-box; position: relative; text-align: center; margin-top: 40px; box-shadow: 0 12px 40px rgba(247, 0, 255, 0.25), 0 0 20px rgba(0, 210, 255, 0.2); outline: 2px solid #f700ff;">
+<!-- HIGH GRAPHICS APP DOWNLOAD & SOCIAL HUB BANNER -->
+<div style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); padding: 35px 20px; border-radius: 20px; text-align: center; margin-top: 40px; box-shadow: 0 15px 40px rgba(56, 189, 248, 0.3); border: 2px solid #38bdf8;">
   
-  <div style="display:inline-block; background: linear-gradient(90deg, #ff0055, #f700ff, #00d2ff, #ffd700); padding: 2px; border-radius: 50px; margin-bottom: 15px;">
-    <span style="background: #0d0d11; color: #fff; padding: 6px 18px; border-radius: 50px; font-size: 13px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; display: inline-block;">
-      🎬 Official Mobile App
-    </span>
-  </div>
+  <span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; padding: 6px 18px; border-radius: 20px; font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid #38bdf8; display: inline-block; margin-bottom: 15px;">
+    🎬 OFFICIAL FILM BOX PLATFORM
+  </span>
 
-  <h2 style="font-size: 28px; font-weight: 900; margin: 10px 0; background: linear-gradient(90deg, #ffd700, #ff8c00, #ff0055, #f700ff, #00d2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase;">
-    Experience FILM BOX App
+  <h2 style="font-size: 26px; font-weight: 900; margin: 10px 0; background: linear-gradient(90deg, #38bdf8, #25d366, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase;">
+    Get The Android App & Join Community
   </h2>
 
-  <p style="color: #dddddd; font-size: 15px; max-width: 650px; margin: 0 auto 25px auto; line-height: 1.6;">
-    Stream thousands of blockbusters, watch HD releases with zero ad popups, and enjoy high-speed mobile playback natively on your Android device!
+  <p style="color: #94a3b8; font-size: 14.5px; font-weight: 600; max-width: 600px; margin: 0 auto 25px auto; line-height: 1.5;">
+    Stream thousands of blockbusters in crisp HD quality, connect with fellow movie fans, and get instant release notifications!
   </p>
 
-  <a href="{APK_DRIVE_LINK}" target="_blank" rel="noopener noreferrer" style="background: linear-gradient(90deg, #ff0055 0%, #f700ff 33%, #00d2ff 66%, #00ffa3 100%); color: #ffffff; padding: 16px 36px; font-size: 18px; font-weight: 900; text-decoration: none; border-radius: 50px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 6px 25px rgba(247, 0, 255, 0.6), 0 0 15px rgba(0, 210, 255, 0.5); border: 2px solid #ffffff; transition: transform 0.2s;">
-    🚀 Install FILM BOX APK
-  </a>
+  <!-- APK Button -->
+  <div style="margin-bottom: 25px;">
+    <a href="{APK_DRIVE_LINK}" target="_blank" rel="noopener noreferrer" style="background: linear-gradient(90deg, #25d366, #128c7e); color: #ffffff; padding: 16px 36px; font-size: 17px; font-weight: 900; text-decoration: none; border-radius: 40px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5); border: 2px solid #ffffff;">
+      🚀 INSTALL FILM BOX APK
+    </a>
+  </div>
 
-  <div style="margin-top: 20px; font-size: 12px; color: #aaaaaa; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-    <span>✅ Fast Download</span>
-    <span>•</span>
-    <span>⚡ 100% Free &amp; Secure</span>
-    <span>•</span>
-    <span>📱 Android Compatible</span>
+  <!-- Social Media & Support Grid Links -->
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 20px;">
+    <a href="{BLOGGER_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #38bdf8;">
+      🌐 VISIT BLOG
+    </a>
+    <a href="{FB_PAGE_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(24, 119, 242, 0.2); color: #60a5fa; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #1877f2;">
+      👍 FACEBOOK PAGE
+    </a>
+    <a href="{FB_GROUP_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(0, 132, 255, 0.2); color: #38bdf8; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #0084ff;">
+      👥 FACEBOOK GROUP
+    </a>
+    <a href="{WHATSAPP_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(37, 211, 102, 0.2); color: #4ade80; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #25d366;">
+      💬 WHATSAPP GROUP
+    </a>
+    <a href="{PAYPAL_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #f59e0b;">
+      ☕ SUPPORT VIA PAYPAL
+    </a>
   </div>
 
 </div>
