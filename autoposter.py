@@ -12,6 +12,7 @@ POSTED_FILE = "posted_movies.txt"
 DEFAULT_IMAGE = "https://picsum.photos/1200/700"
 TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
 
+# All Official Links & Platforms
 APK_DRIVE_LINK = "https://drive.google.com/uc?export=download&id=1-MzbkxuEXllxTWdPv0zVXRmXtmBlfA9N"
 WHATSAPP_LINK = "https://chat.whatsapp.com/L02vNHjowvW83MLbJVqIwC?s=cl&p=a&mlu=4&ilr=4"
 FB_PAGE_LINK = "https://www.facebook.com/profile.php?id=61595278122419"
@@ -19,6 +20,7 @@ FB_GROUP_LINK = "https://www.facebook.com/share/g/19zsQAbGu7/"
 INSTAGRAM_LINK = "https://www.instagram.com/filmboxseries?exln=cTF0dnRlZXV0MXhm"
 BLOGGER_LINK = "https://filmboxproductions.blogspot.com"
 PAYPAL_LINK = "https://www.paypal.com/donate?business=lomalianorman@gmail.com&currency_code=USD"
+
 
 def get_access_token():
     response = requests.post(
@@ -33,6 +35,7 @@ def get_access_token():
     response.raise_for_status()
     return response.json()["access_token"]
 
+
 def already_posted(movie_id):
     if not movie_id:
         return False
@@ -42,11 +45,13 @@ def already_posted(movie_id):
     with open(POSTED_FILE, "r", encoding="utf-8") as f:
         return str(movie_id) in [x.strip() for x in f.readlines()]
 
+
 def mark_posted(movie_id):
     if not movie_id:
         return
     with open(POSTED_FILE, "a", encoding="utf-8") as f:
         f.write(str(movie_id) + "\n")
+
 
 def fetch_movies():
     movies = []
@@ -87,6 +92,7 @@ def fetch_movies():
 
     return movies
 
+
 def format_movie_content(movie):
     title = movie["title"]
     overview = movie["overview"]
@@ -109,10 +115,10 @@ def format_movie_content(movie):
 ⭐ <strong>TMDB Rating:</strong> <span style="color:#fbbf24; font-weight:bold;">{vote_average} / 10</span>
 </div>
 
-<h2 style="color:#38bdf8; border-bottom:2px solid rgba(56,189,248,0.3); padding-bottom:8px; text-transform:uppercase; font-size:20px;">Story Overview</h2>
+<h2 style="color:#38bdf8; border-bottom:2px solid rgba(56,189,248,0.3); padding-bottom:8px; text-transform:uppercase; font-size:20px;">📖 Story Overview</h2>
 <p style="font-size:16px; color:#cbd5e1; font-weight:600; line-height:1.6;">{overview}</p>
 
-<h2 style="color:#f472b6; border-bottom:2px solid rgba(244,114,182,0.3); padding-bottom:8px; margin-top:35px; text-transform:uppercase; font-size:20px;">Watch / Stream Online</h2>
+<h2 style="color:#f472b6; border-bottom:2px solid rgba(244,114,182,0.3); padding-bottom:8px; margin-top:35px; text-transform:uppercase; font-size:20px;">🍿 Watch / Stream Online</h2>
 <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; margin-bottom: 35px; box-shadow:0 12px 35px rgba(0,0,0,0.9); border-radius:14px; overflow:hidden; border: 2px solid rgba(244,114,182,0.4);">
   <iframe src="{stream_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen="true"></iframe>
 </div>
@@ -142,22 +148,22 @@ def format_movie_content(movie):
   <!-- Social Media & Support Grid Links -->
   <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 20px;">
     <a href="{BLOGGER_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #38bdf8;">
-      🌐 VISIT BLOG
+      🌐 𝗕𝗟𝗢𝗚𝗚𝗘𝗥 𝗪𝗘𝗕𝗦𝗜𝗧𝗘
     </a>
     <a href="{FB_PAGE_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(24, 119, 242, 0.2); color: #60a5fa; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #1877f2;">
-      👍 FACEBOOK PAGE
+      📘 𝗙𝗔𝗖𝗘𝗕𝗢𝗢𝗞 𝗣𝗔𝗚𝗘
     </a>
     <a href="{FB_GROUP_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(0, 132, 255, 0.2); color: #38bdf8; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #0084ff;">
-      👥 FACEBOOK GROUP
+      👥 𝗙𝗔𝗖𝗘𝗕𝗢𝗢𝗞 𝗚𝗥𝗢𝗨𝗣
     </a>
     <a href="{WHATSAPP_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(37, 211, 102, 0.2); color: #4ade80; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #25d366;">
-      💬 WHATSAPP GROUP
+      💬 𝗪𝗛𝗔𝗧𝗦𝗔𝗣𝗣 𝗩𝗜𝗣
     </a>
     <a href="{INSTAGRAM_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(225, 48, 108, 0.2); color: #f43f5e; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #e1306c;">
-      📸 INSTAGRAM
+      📸 𝗜𝗡𝗦𝗧𝗔𝗚𝗥𝗔𝗠
     </a>
     <a href="{PAYPAL_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #f59e0b;">
-      ☕ SUPPORT VIA PAYPAL
+      ☕ 𝗦𝗨𝗣𝗣𝗢𝗥𝗧 𝗣𝗔𝗬𝗣𝗔𝗟
     </a>
   </div>
 
@@ -166,6 +172,7 @@ def format_movie_content(movie):
 </div>
 """
     return html
+
 
 def post_to_blogger(movie, token):
     movie_id = movie["id"]
@@ -197,6 +204,7 @@ def post_to_blogger(movie, token):
         print(f"❌ Failed to post {movie['title']}: {response.text}")
         return False
 
+
 def main():
     token = get_access_token()
     movies = fetch_movies()
@@ -219,6 +227,7 @@ def main():
             print(f"Posting Error: {e}")
 
     print(f"Finished! Successfully posted {posted_count} movies today.")
+
 
 if __name__ == "__main__":
     main()
