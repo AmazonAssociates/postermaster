@@ -17,6 +17,7 @@ APK_DRIVE_LINK = "https://drive.google.com/uc?export=download&id=1-MzbkxuEXllxTW
 WHATSAPP_LINK = "https://chat.whatsapp.com/L02vNHjowvW83MLbJVqIwC?s=cl&p=a&mlu=4&ilr=4"
 FB_PAGE_LINK = "https://www.facebook.com/profile.php?id=61595278122419"
 FB_GROUP_LINK = "https://www.facebook.com/share/g/19zsQAbGu7/"
+INSTAGRAM_LINK = "https://www.instagram.com/filmboxseries?exln=cTF0dnRlZXV0MXhm"
 BLOGGER_LINK = "https://filmboxproductions.blogspot.com"
 PAYPAL_LINK = "https://www.paypal.com/donate?business=lomalianorman@gmail.com&currency_code=USD"
 
@@ -157,6 +158,9 @@ def format_movie_content(movie):
     </a>
     <a href="{WHATSAPP_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(37, 211, 102, 0.2); color: #4ade80; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #25d366;">
       💬 WHATSAPP GROUP
+    </a>
+    <a href="{INSTAGRAM_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(225, 48, 108, 0.2); color: #f43f5e; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #e1306c;">
+      📸 INSTAGRAM
     </a>
     <a href="{PAYPAL_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #f59e0b;">
       ☕ SUPPORT VIA PAYPAL
