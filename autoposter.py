@@ -12,7 +12,6 @@ POSTED_FILE = "posted_movies.txt"
 DEFAULT_IMAGE = "https://picsum.photos/1200/700"
 TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
 
-# All Official Links & Platforms
 APK_DRIVE_LINK = "https://drive.google.com/uc?export=download&id=1-MzbkxuEXllxTWdPv0zVXRmXtmBlfA9N"
 WHATSAPP_LINK = "https://chat.whatsapp.com/L02vNHjowvW83MLbJVqIwC?s=cl&p=a&mlu=4&ilr=4"
 FB_PAGE_LINK = "https://www.facebook.com/profile.php?id=61595278122419"
@@ -20,7 +19,6 @@ FB_GROUP_LINK = "https://www.facebook.com/share/g/19zsQAbGu7/"
 INSTAGRAM_LINK = "https://www.instagram.com/filmboxseries?exln=cTF0dnRlZXV0MXhm"
 BLOGGER_LINK = "https://filmboxproductions.blogspot.com"
 PAYPAL_LINK = "https://www.paypal.com/donate?business=lomalianorman@gmail.com&currency_code=USD"
-
 
 def get_access_token():
     response = requests.post(
@@ -35,7 +33,6 @@ def get_access_token():
     response.raise_for_status()
     return response.json()["access_token"]
 
-
 def already_posted(movie_id):
     if not movie_id:
         return False
@@ -45,13 +42,11 @@ def already_posted(movie_id):
     with open(POSTED_FILE, "r", encoding="utf-8") as f:
         return str(movie_id) in [x.strip() for x in f.readlines()]
 
-
 def mark_posted(movie_id):
     if not movie_id:
         return
     with open(POSTED_FILE, "a", encoding="utf-8") as f:
         f.write(str(movie_id) + "\n")
-
 
 def fetch_movies():
     movies = []
@@ -91,7 +86,6 @@ def fetch_movies():
         print(f"TMDB API Error: {e}")
 
     return movies
-
 
 def format_movie_content(movie):
     title = movie["title"]
@@ -173,7 +167,6 @@ def format_movie_content(movie):
 """
     return html
 
-
 def post_to_blogger(movie, token):
     movie_id = movie["id"]
 
@@ -204,7 +197,6 @@ def post_to_blogger(movie, token):
         print(f"❌ Failed to post {movie['title']}: {response.text}")
         return False
 
-
 def main():
     token = get_access_token()
     movies = fetch_movies()
@@ -227,7 +219,6 @@ def main():
             print(f"Posting Error: {e}")
 
     print(f"Finished! Successfully posted {posted_count} movies today.")
-
 
 if __name__ == "__main__":
     main()
