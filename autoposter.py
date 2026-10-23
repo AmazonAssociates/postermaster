@@ -59,36 +59,40 @@ def fetch_movies():
         print("❌ Error: TMDB_API_KEY is missing!")
         return movies
 
-    url = f"https://api.themoviedb.org/3/trending/movie/day?api_key={TMDB_API_KEY}"
-    
-    try:
-        print("Fetching trending movies from TMDB...")
-        response = requests.get(url, timeout=30)
-        response.raise_for_status()
-        data = response.json()
+    # Fetch multiple pages (1 to 3) to ensure we always have enough fresh movies
+    for page in range(1, 4):
+        url = f"https://api.themoviedb.org/3/trending/movie/day?api_key={TMDB_API_KEY}&page={page}"
         
-        results = data.get("results", [])
-        for item in results:
-            movie_id = item.get("id")
-            title = item.get("title") or item.get("original_title", "Unknown Title")
-            overview = item.get("overview", "No overview available.")
-            release_date = item.get("release_date", "Coming Soon")
-            vote_average = item.get("vote_average", 0)
+        try:
+            print(f"Fetching trending movies from TMDB (Page {page})...")
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+            data = response.json()
             
-            poster_path = item.get("poster_path")
-            image_url = f"{TMDB_IMAGE_BASE}{poster_path}" if poster_path else DEFAULT_IMAGE
+            results = data.get("results", [])
+            for item in results:
+                movie_id = item.get("id")
+                title = item.get("title") or item.get("original_title", "Unknown Title")
+                overview = item.get("overview", "No overview available.")
+                release_date = item.get("release_date", "Coming Soon")
+                vote_average = item.get("vote_average", 0)
+                
+                poster_path = item.get("poster_path")
+                image_url = f"{TMDB_IMAGE_BASE}{poster_path}" if poster_path else DEFAULT_IMAGE
 
-            movies.append({
-                "id": movie_id,
-                "title": title,
-                "overview": overview,
-                "release_date": release_date,
-                "vote_average": vote_average,
-                "image_url": image_url
-            })
-            
-    except Exception as e:
-        print(f"TMDB API Error: {e}")
+                # Avoid duplicates within the fetched batch
+                if not any(m["id"] == movie_id for m in movies):
+                    movies.append({
+                        "id": movie_id,
+                        "title": title,
+                        "overview": overview,
+                        "release_date": release_date,
+                        "vote_average": vote_average,
+                        "image_url": image_url
+                    })
+                
+        except Exception as e:
+            print(f"TMDB API Error on page {page}: {e}")
 
     return movies
 
@@ -209,10 +213,10 @@ def main():
     token = get_access_token()
     movies = fetch_movies()
 
-    print(f"Found {len(movies)} movies from TMDB.")
+    print(f"Found {len(movies)} total movies from TMDB.")
 
     posted_count = 0
-    target_posts = 8
+    target_posts = 10  # Increased target to 10 new posts
 
     for movie in movies:
         if posted_count >= target_posts:
@@ -226,7 +230,7 @@ def main():
         except Exception as e:
             print(f"Posting Error: {e}")
 
-    print(f"Finished! Successfully posted {posted_count} movies today.")
+    print(f"Finished! Successfully posted {posted_count} new movies today.")
 
 
 if __name__ == "__main__":
