@@ -12,8 +12,8 @@ POSTED_FILE = "posted_movies.txt"
 DEFAULT_IMAGE = "https://picsum.photos/1200/700"
 TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
 
-# All Official Links & Platforms
-APK_DRIVE_LINK = "https://drive.google.com/uc?export=download&id=1-MzbkxuEXllxTWdPv0zVXRmXtmBlfA9N"
+# All Official Links & Platforms (Updated APK Link)
+APK_DRIVE_LINK = "https://drive.google.com/uc?export=download&id=1nGCkJ8wMIININKVj6d94zvJZM-Bm3Iwb"
 WHATSAPP_LINK = "https://chat.whatsapp.com/L02vNHjowvW83MLbJVqIwC?s=cl&p=a&mlu=4&ilr=4"
 FB_PAGE_LINK = "https://www.facebook.com/profile.php?id=61595278122419"
 FB_GROUP_LINK = "https://www.facebook.com/share/g/19zsQAbGu7/"
@@ -216,7 +216,7 @@ def main():
     print(f"Found {len(movies)} total movies from TMDB.")
 
     posted_count = 0
-    target_posts = 10  # Increased target to 10 new posts
+    target_posts = 10
 
     for movie in movies:
         if posted_count >= target_posts:
