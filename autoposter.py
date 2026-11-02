@@ -12,9 +12,10 @@ POSTED_FILE = "posted_movies.txt"
 DEFAULT_IMAGE = "https://picsum.photos/1200/700"
 TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
 
-# All Official Links & Platforms (Updated APK Link)
+# All Official Links & Platforms (Updated APK & WhatsApp Channel Links)
 APK_DRIVE_LINK = "https://drive.google.com/file/d/1gG3zoufzfBjStOyQOoIK92M8UMWd6nT6/view?usp=sharing"
 WHATSAPP_LINK = "https://chat.whatsapp.com/L02vNHjowvW83MLbJVqIwC?s=cl&p=a&mlu=4&ilr=4"
+WHATSAPP_CHANNEL_LINK = "https://whatsapp.com/channel/0029Vb9dDgtBPzjYQWsyKg0u"
 FB_PAGE_LINK = "https://www.facebook.com/profile.php?id=61595278122419"
 FB_GROUP_LINK = "https://www.facebook.com/share/g/19zsQAbGu7/"
 INSTAGRAM_LINK = "https://www.instagram.com/filmboxseries?exln=cTF0dnRlZXV0MXhm"
@@ -240,6 +241,9 @@ def format_movie_content(movie):
     </a>
     <a href="{WHATSAPP_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(37, 211, 102, 0.2); color: #4ade80; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #25d366;">
       💬 𝗪𝗛𝗔𝗧𝗦𝗔𝗣𝗣 𝗩𝗜𝗣
+    </a>
+    <a href="{WHATSAPP_CHANNEL_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(37, 211, 102, 0.2); color: #4ade80; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #25d366;">
+      📢 𝗪𝗛𝗔𝗧𝗦𝗔𝗣𝗣 𝗖𝗛𝗔𝗡𝗡𝗘𝗟
     </a>
     <a href="{INSTAGRAM_LINK}" target="_blank" rel="noopener noreferrer" style="background: rgba(225, 48, 108, 0.2); color: #f43f5e; padding: 10px 18px; border-radius: 25px; font-size: 13px; font-weight: 800; text-decoration: none; border: 1px solid #e1306c;">
       📸 𝗜𝗡𝗦𝗧𝗔𝗚𝗥𝗔𝗠
