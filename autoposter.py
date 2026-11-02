@@ -13,7 +13,7 @@ DEFAULT_IMAGE = "https://picsum.photos/1200/700"
 TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
 
 # All Official Links & Platforms (Updated APK Link)
-APK_DRIVE_LINK = "https://drive.google.com/uc?export=download&id=1Zy569gvAUDnCjpKLin2o--Ehq4j-8X9N"
+APK_DRIVE_LINK = "https://drive.google.com/file/d/1gG3zoufzfBjStOyQOoIK92M8UMWd6nT6/view?usp=sharing"
 WHATSAPP_LINK = "https://chat.whatsapp.com/L02vNHjowvW83MLbJVqIwC?s=cl&p=a&mlu=4&ilr=4"
 FB_PAGE_LINK = "https://www.facebook.com/profile.php?id=61595278122419"
 FB_GROUP_LINK = "https://www.facebook.com/share/g/19zsQAbGu7/"
