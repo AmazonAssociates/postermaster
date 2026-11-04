@@ -200,10 +200,72 @@ def format_movie_content(movie):
   </ul>
 </div>
 
-<!-- STREAMING PLAYER (SECURE SANDBOXED IFRAME TO BLOCK POPUP REDIRECTS) -->
+<!-- STREAMING PLAYER WITH 10-MINUTE TIMER & PAYWALL MODAL -->
 <h2 style="color:#f472b6; border-bottom:2px solid rgba(244,114,182,0.3); padding-bottom:8px; margin-top:35px; text-transform:uppercase; font-size:20px;">🍿 Watch / Stream Online in HD</h2>
-<div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; margin-bottom: 35px; box-shadow:0 12px 35px rgba(0,0,0,0.9); border-radius:14px; overflow:hidden; border: 2px solid rgba(244,114,182,0.4);">
-  <iframe src="{stream_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" sandbox="allow-scripts allow-same-origin allow-presentation" allowfullscreen="true"></iframe>
+<div id="filmbox-player-container" style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; margin-bottom: 35px; box-shadow:0 12px 35px rgba(0,0,0,0.9); border-radius:14px; overflow:hidden; border: 2px solid rgba(244,114,182,0.4);">
+  <iframe id="filmbox-video-frame" src="{stream_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" sandbox="allow-scripts allow-same-origin allow-presentation" allowfullscreen="true"></iframe>
+  
+  <!-- PAYWALL OVERLAY MODAL (Initially Hidden) -->
+  <div id="filmbox-paywall-modal" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(2, 6, 23, 0.95); z-index:9999; padding:20px; box-sizing:border-box; overflow-y:auto; text-align:center;">
+    <div style="max-width:600px; margin:20px auto; background:linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border:2px solid #38bdf8; border-radius:20px; padding:25px; box-shadow:0 15px 40px rgba(56,189,248,0.4);">
+      
+      <span style="background:rgba(56,189,248,0.2); color:#38bdf8; padding:5px 15px; border-radius:20px; font-size:11px; font-weight:800; text-transform:uppercase; border:1px solid #38bdf8;">
+        ⏳ Free 10-Minute Trial Ended
+      </span>
+      
+      <h2 style="color:#ffffff; font-size:24px; margin:15px 0 10px 0; text-transform:uppercase;">Unlock Unlimited HD Streaming</h2>
+      <p style="color:#94a3b8; font-size:13.5px; margin-bottom:20px;">Your free viewing window has expired. Choose a VIP Pass below to continue watching instantly!</p>
+      
+      <!-- VIP PASSES OPTIONS GRID -->
+      <div style="display:flex; flex-direction:column; gap:10px; max-height:300px; overflow-y:auto; padding-right:5px;">
+        
+        <!-- Trial VIP ($0.10) -->
+        <a href="https://www.paypal.com/ncp/payment/GGNT396SFSNCC" target="_blank" style="display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.9); border:1px solid #a855f7; padding:12px 18px; border-radius:12px; text-decoration:none;">
+          <span style="color:#e879f9; font-weight:800; font-size:14px;">✨ Trial VIP Pass</span>
+          <span style="background:#a855f7; color:#fff; padding:6px 14px; border-radius:20px; font-weight:900; font-size:13px;">$0.10 USD</span>
+        </a>
+
+        <!-- Daily VIP ($0.40) -->
+        <a href="https://www.paypal.com/ncp/payment/NUZ4E4JMHTB92" target="_blank" style="display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.9); border:1px solid #38bdf8; padding:12px 18px; border-radius:12px; text-decoration:none;">
+          <span style="color:#38bdf8; font-weight:800; font-size:14px;">🔥 Daily VIP Pass</span>
+          <span style="background:#38bdf8; color:#0f172a; padding:6px 14px; border-radius:20px; font-weight:900; font-size:13px;">$0.40 USD</span>
+        </a>
+
+        <!-- Weekend VIP ($0.90) -->
+        <a href="https://www.paypal.com/ncp/payment/LMANQFKU3MMNS" target="_blank" style="display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.9); border:1px solid #22c55e; padding:12px 18px; border-radius:12px; text-decoration:none;">
+          <span style="color:#4ade80; font-weight:800; font-size:14px;">⚡ Weekend VIP Pass</span>
+          <span style="background:#22c55e; color:#fff; padding:6px 14px; border-radius:20px; font-weight:900; font-size:13px;">$0.90 USD</span>
+        </a>
+
+        <!-- Weekly Master VIP ($1.90) -->
+        <a href="https://www.paypal.com/ncp/payment/K8PHR3W33B83A" target="_blank" style="display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.9); border:1px solid #eab308; padding:12px 18px; border-radius:12px; text-decoration:none;">
+          <span style="color:#facc15; font-weight:800; font-size:14px;">👑 Weekly Master VIP</span>
+          <span style="background:#eab308; color:#0f172a; padding:6px 14px; border-radius:20px; font-weight:900; font-size:13px;">$1.90 USD</span>
+        </a>
+
+        <!-- Monthly VIP ($5.80) -->
+        <a href="https://www.paypal.com/ncp/payment/6JY7ZUPLGM78U" target="_blank" style="display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.9); border:1px solid #ec4899; padding:12px 18px; border-radius:12px; text-decoration:none;">
+          <span style="color:#f472b6; font-weight:800; font-size:14px;">💎 Monthly VIP Pass</span>
+          <span style="background:#ec4899; color:#fff; padding:6px 14px; border-radius:20px; font-weight:900; font-size:13px;">$5.80 USD</span>
+        </a>
+
+        <!-- Annual Diamond VIP ($42.30) -->
+        <a href="https://www.paypal.com/ncp/payment/V3V43NQ97MAWC" target="_blank" style="display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.9); border:1px solid #06b6d4; padding:12px 18px; border-radius:12px; text-decoration:none;">
+          <span style="color:#22d3ee; font-weight:800; font-size:14px;">🏆 Annual Diamond VIP</span>
+          <span style="background:#06b6d4; color:#0f172a; padding:6px 14px; border-radius:20px; font-weight:900; font-size:13px;">$42.30 USD</span>
+        </a>
+
+        <!-- Lifetime VIP ($76.90) -->
+        <a href="https://www.paypal.com/ncp/payment/EDTSB5JV9CC8G" target="_blank" style="display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.9); border:1px solid #f97316; padding:12px 18px; border-radius:12px; text-decoration:none;">
+          <span style="color:#fb923c; font-weight:800; font-size:14px;">🚀 Lifetime VIP Pass (Best Value)</span>
+          <span style="background:#f97316; color:#fff; padding:6px 14px; border-radius:20px; font-weight:900; font-size:13px;">$76.90 USD</span>
+        </a>
+
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <!-- HIGH GRAPHICS APP DOWNLOAD & SOCIAL HUB BANNER -->
@@ -256,6 +318,35 @@ def format_movie_content(movie):
 </div>
 
 </div>
+
+<!-- JAVASCRIPT TIMER TRACKING LOGIC -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // 10 minutes in milliseconds (10 * 60 * 1000 = 600000ms)
+    const TRIAL_DURATION = 10 * 60 * 1000;
+    const storageKey = "filmbox_trial_start_{movie_id}";
+    
+    let startTime = localStorage.getItem(storageKey);
+    if (!startTime) {
+      startTime = Date.now();
+      localStorage.setItem(storageKey, startTime);
+    }
+
+    function checkTrialTime() {
+      let elapsed = Date.now() - parseInt(startTime, 10);
+      if (elapsed >= TRIAL_DURATION) {
+        // Trigger Paywall Modal & Stop Video Stream
+        document.getElementById("filmbox-paywall-modal").style.display = "block";
+        document.getElementById("filmbox-video-frame").src = ""; // Stop stream playback
+      } else {
+        // Check remaining time every 5 seconds
+        setTimeout(checkTrialTime, 5000);
+      }
+    }
+
+    checkTrialTime();
+  });
+</script>
 """
     return html
 
