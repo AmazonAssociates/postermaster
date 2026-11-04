@@ -27,7 +27,7 @@ jobs:
           BLOGGER_REFRESH_TOKEN: ${{ secrets.BLOGGER_REFRESH_TOKEN }}
           BLOGGER_BLOG_ID: ${{ secrets.BLOGGER_BLOG_ID }}
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-        run: python autoposter.py
+        run: python update_old_posts.py
 
       - name: Commit posted movies history
         uses: stefanzweifel/git-auto-commit-action@v5
