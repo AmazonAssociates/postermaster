@@ -203,7 +203,7 @@ def format_movie_content(movie):
 <!-- STREAMING PLAYER WITH 10-MINUTE TIMER & PAYWALL MODAL -->
 <h2 style="color:#f472b6; border-bottom:2px solid rgba(244,114,182,0.3); padding-bottom:8px; margin-top:35px; text-transform:uppercase; font-size:20px;">🍿 Watch / Stream Online in HD</h2>
 <div id="filmbox-player-container" style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; margin-bottom: 35px; box-shadow:0 12px 35px rgba(0,0,0,0.9); border-radius:14px; overflow:hidden; border: 2px solid rgba(244,114,182,0.4);">
-  <iframe id="filmbox-video-frame" src="{stream_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" sandbox="allow-scripts allow-same-origin allow-presentation" allowfullscreen="true"></iframe>
+  <iframe id="filmbox-video-frame" src="{stream_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" sandbox="allow-scripts allow-same-origin allow-presentation allow-forms" allowfullscreen="true"></iframe>
   
   <!-- PAYWALL OVERLAY MODAL (Initially Hidden) -->
   <div id="filmbox-paywall-modal" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(2, 6, 23, 0.95); z-index:9999; padding:20px; box-sizing:border-box; overflow-y:auto; text-align:center;">
