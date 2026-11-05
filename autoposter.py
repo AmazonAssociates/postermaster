@@ -322,8 +322,7 @@ def format_movie_content(movie):
 <!-- JAVASCRIPT TIMER TRACKING LOGIC -->
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // 10 minutes in milliseconds (10 * 60 * 1000 = 600000ms)
-    const TRIAL_DURATION = 10 * 60 * 1000;
+    const TRIAL_DURATION = 600000;
     const storageKey = "filmbox_trial_start_{movie_id}";
     
     let startTime = localStorage.getItem(storageKey);
@@ -335,11 +334,9 @@ def format_movie_content(movie):
     function checkTrialTime() {
       let elapsed = Date.now() - parseInt(startTime, 10);
       if (elapsed >= TRIAL_DURATION) {
-        // Trigger Paywall Modal & Stop Video Stream
         document.getElementById("filmbox-paywall-modal").style.display = "block";
-        document.getElementById("filmbox-video-frame").src = ""; // Stop stream playback
+        document.getElementById("filmbox-video-frame").src = "";
       } else {
-        // Check remaining time every 5 seconds
         setTimeout(checkTrialTime, 5000);
       }
     }
