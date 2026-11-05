@@ -54,12 +54,11 @@ def update_post_content(post, token):
     
     updated_content = content
     
-    # Completely remove sandbox attribute from the iframe to prevent embedding errors
+    # Completely remove sandbox attribute from the iframe to fix the embedding error
     if 'sandbox=' in updated_content:
         updated_content = re.sub(r'\s+sandbox="[^"]*"', '', updated_content)
         updated_content = re.sub(r"\s+sandbox='[^']*'", '', updated_content)
 
-    # If content didn't change, no need to send an API request
     if updated_content == content:
         return False
 
@@ -73,7 +72,7 @@ def update_post_content(post, token):
     
     res = requests.put(url, headers=headers, json=body)
     if res.ok:
-        print(f"✅ Fixed player sandbox for: {post['title']}")
+        print(f"✅ Cleaned sandbox error for: {post['title']}")
         return True
     else:
         print(f"❌ Failed to update {post['title']}: {res.text}")
@@ -94,7 +93,7 @@ def main():
         except Exception as e:
             print(f"Error processing post {post.get('id')}: {e}")
 
-    print(f"\n🎉 Finished cleaning up video sandboxes! Updated {updated_count} movie posts.")
+    print(f"\n🎉 Finished! Fixed video embeds on {updated_count} older posts.")
 
 if __name__ == "__main__":
     main()
