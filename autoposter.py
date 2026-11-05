@@ -15,7 +15,7 @@ TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
 # All Official Links & Platforms (Updated APK & WhatsApp Channel Links)
 APK_DRIVE_LINK = "https://drive.google.com/file/d/177gxXg5zZ4USgG_3uHQNZAVNcMES4CCk/view?usp=sharing"
 WHATSAPP_LINK = "https://chat.whatsapp.com/L02vNHjowvW83MLbJVqIwC?s=cl&p=a&mlu=4&ilr=4"
-WHATSAPP_CHANNEL_LINK = "https://whatsapp.com/channel/0029Vb9dDgtBPzjYQWsyKg0u"
+WHATSAPP_CHANNEL_LINK = "https://whatsapp.com/channel/0029Vb9dDgtBPzjYWsyKg0u"
 FB_PAGE_LINK = "https://www.facebook.com/profile.php?id=61595278122419"
 FB_GROUP_LINK = "https://www.facebook.com/share/g/19zsQAbGu7/"
 INSTAGRAM_LINK = "https://www.instagram.com/filmboxseries?exln=cTF0dnRlZXV0MXhm"
@@ -200,11 +200,15 @@ def format_movie_content(movie):
   </ul>
 </div>
 
-<!-- STREAMING PLAYER WITH 10-MINUTE TIMER & PAYWALL MODAL -->
+<!-- STREAMING PLAYER WITH ANTI-REDIRECT SHIELD & 10-MINUTE TIMER -->
 <h2 style="color:#f472b6; border-bottom:2px solid rgba(244,114,182,0.3); padding-bottom:8px; margin-top:35px; text-transform:uppercase; font-size:20px;">🍿 Watch / Stream Online in HD</h2>
 <div id="filmbox-player-container" style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; margin-bottom: 35px; box-shadow:0 12px 35px rgba(0,0,0,0.9); border-radius:14px; overflow:hidden; border: 2px solid rgba(244,114,182,0.4);">
+  
   <iframe id="filmbox-video-frame" src="{stream_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen="true"></iframe>
   
+  <!-- ANTI-REDIRECT TRANSPARENT CLICK SHIELD (Blocks the first popup redirect trap) -->
+  <div id="filmbox-click-shield" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:998; cursor:pointer; background:transparent;" onclick="this.style.display='none';"></div>
+
   <!-- PAYWALL OVERLAY MODAL (Initially Hidden) -->
   <div id="filmbox-paywall-modal" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(2, 6, 23, 0.95); z-index:9999; padding:20px; box-sizing:border-box; overflow-y:auto; text-align:center;">
     <div style="max-width:600px; margin:20px auto; background:linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border:2px solid #38bdf8; border-radius:20px; padding:25px; box-shadow:0 15px 40px rgba(56,189,248,0.4);">
@@ -319,7 +323,7 @@ def format_movie_content(movie):
 
 </div>
 
-<!-- JAVASCRIPT TIMER TRACKING LOGIC -->
+<!-- JAVASCRIPT TIMER & SHIELD LOGIC -->
 <script>
   document.addEventListener("DOMContentLoaded", function() {{
     const TRIAL_DURATION = 600000;
