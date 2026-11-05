@@ -321,28 +321,28 @@ def format_movie_content(movie):
 
 <!-- JAVASCRIPT TIMER TRACKING LOGIC -->
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function() {{
     const TRIAL_DURATION = 600000;
     const storageKey = "filmbox_trial_start_{movie_id}";
     
     let startTime = localStorage.getItem(storageKey);
-    if (!startTime) {
+    if (!startTime) {{
       startTime = Date.now();
       localStorage.setItem(storageKey, startTime);
-    }
+    }}
 
-    function checkTrialTime() {
+    function checkTrialTime() {{
       let elapsed = Date.now() - parseInt(startTime, 10);
-      if (elapsed >= TRIAL_DURATION) {
+      if (elapsed >= TRIAL_DURATION) {{
         document.getElementById("filmbox-paywall-modal").style.display = "block";
         document.getElementById("filmbox-video-frame").src = "";
-      } else {
+      }} else {{
         setTimeout(checkTrialTime, 5000);
-      }
-    }
+      }}
+    }}
 
     checkTrialTime();
-  });
+  }});
 </script>
 """
     return html
