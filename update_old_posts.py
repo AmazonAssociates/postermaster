@@ -47,17 +47,21 @@ def update_post_content(post, token):
     post_id = post["id"]
     content = post.get("content", "")
     
-    # Check if it's a movie post containing the vidsrc embed
-    match = re.search(r'vidsrc\.to/embed/movie/(\d+)', content)
-    if not match:
+    # Check if it's a movie post containing a video embed iframe
+    if 'iframe' not in content or 'vidsrc' not in content:
         return False
     
     updated_content = content
     
-    # Completely remove sandbox attribute from the iframe to fix the embedding error
+    # 1. Completely remove any sandbox attributes causing the embedding error
     if 'sandbox=' in updated_content:
         updated_content = re.sub(r'\s+sandbox="[^"]*"', '', updated_content)
         updated_content = re.sub(r"\s+sandbox='[^']*'", '', updated_content)
+
+    # 2. Add the anti-redirect click shield if it's missing from the player container
+    if 'filmbox-click-shield' not in updated_content:
+        shield_html = '<div id="filmbox-click-shield" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:998; cursor:pointer; background:transparent;" onclick="this.style.display=\'none\';"></div>'
+        updated_content = updated_content.replace('</iframe>', f'</iframe>\n  {shield_html}')
 
     if updated_content == content:
         return False
@@ -72,7 +76,7 @@ def update_post_content(post, token):
     
     res = requests.put(url, headers=headers, json=body)
     if res.ok:
-        print(f"✅ Cleaned sandbox error for: {post['title']}")
+        print(f"✅ Fixed sandbox & added click shield for: {post['title']}")
         return True
     else:
         print(f"❌ Failed to update {post['title']}: {res.text}")
@@ -93,7 +97,7 @@ def main():
         except Exception as e:
             print(f"Error processing post {post.get('id')}: {e}")
 
-    print(f"\n🎉 Finished! Fixed video embeds on {updated_count} older posts.")
+    print(f"\n🎉 Finished! Fixed video embeds and added protection on {updated_count} older movie posts.")
 
 if __name__ == "__main__":
     main()
