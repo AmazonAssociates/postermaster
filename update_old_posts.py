@@ -47,30 +47,22 @@ def update_post_content(post, token):
     post_id = post["id"]
     content = post.get("content", "")
     
-    # Extract TMDB Movie ID from the existing vidsrc iframe embed URL
+    # Check if it's a movie post containing the vidsrc embed
     match = re.search(r'vidsrc\.to/embed/movie/(\d+)', content)
     if not match:
-        # Skip news/non-movie posts
         return False
     
-    movie_id = match.group(1)
+    updated_content = content
     
-    # Update APK Drive links
-    old_apk_pattern = r'https://drive\.google\.com/file/d/[a-zA-Z0-9_-]+/view\?usp=sharing'
-    new_apk_link = "https://drive.google.com/file/d/177gxXg5zZ4USgG_3uHQNZAVNcMES4CCk/view?usp=sharing"
-    updated_content = re.sub(old_apk_pattern, new_apk_link, content)
-    
-    # Ensure optimal sandbox attributes to prevent player warnings while keeping ads blocked
-    optimal_sandbox = 'sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"'
-    
+    # Completely remove sandbox attribute from the iframe to prevent embedding errors
     if 'sandbox=' in updated_content:
-        updated_content = re.sub(r'sandbox="[^"]*"', optimal_sandbox, updated_content)
-    else:
-        updated_content = updated_content.replace(
-            '<iframe src=',
-            f'<iframe id="filmbox-video-frame" {optimal_sandbox} src='
-        )
-    
+        updated_content = re.sub(r'\s+sandbox="[^"]*"', '', updated_content)
+        updated_content = re.sub(r"\s+sandbox='[^']*'", '', updated_content)
+
+    # If content didn't change, no need to send an API request
+    if updated_content == content:
+        return False
+
     # Send update request to Blogger API
     url = f"https://www.googleapis.com/blogger/v3/blogs/{BLOG_ID}/posts/{post_id}"
     headers = {"Authorization": f"Bearer {token}"}
@@ -81,7 +73,7 @@ def update_post_content(post, token):
     
     res = requests.put(url, headers=headers, json=body)
     if res.ok:
-        print(f"✅ Updated movie post: {post['title']}")
+        print(f"✅ Fixed player sandbox for: {post['title']}")
         return True
     else:
         print(f"❌ Failed to update {post['title']}: {res.text}")
@@ -94,21 +86,15 @@ def main():
     print(f"Found {len(posts)} total published posts.")
 
     updated_count = 0
-    skipped_news_count = 0
-
     for post in posts:
         try:
             if update_post_content(post, token):
                 updated_count += 1
-            else:
-                skipped_news_count += 1
             time.sleep(0.5)
         except Exception as e:
             print(f"Error processing post {post.get('id')}: {e}")
 
-    print(f"\n🎉 Finished execution cleanly!")
-    print(f"🎬 Movie posts updated: {updated_count}")
-    print(f"📰 News/Non-movie posts safely ignored: {skipped_news_count}")
+    print(f"\n🎉 Finished cleaning up video sandboxes! Updated {updated_count} movie posts.")
 
 if __name__ == "__main__":
     main()
